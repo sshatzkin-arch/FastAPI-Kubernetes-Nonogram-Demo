@@ -4,6 +4,7 @@ from flask_swagger import swagger
 
 app = Flask(__name__)
 api = Api(app)
+
 STUDENTS = {
   '1': {'name': 'Mark', 'age': 23, 'spec': 'math'},
   '2': {'name': 'Jane', 'age': 20, 'spec': 'biology'},
@@ -51,8 +52,8 @@ def spec():
     swag = swagger(app)
     swag['info']['version'] = "2.0"
     swag['info']['title'] = "Test Api"
-    swag['host'] = "http://localhost:5000/"
-    swag['basePath'] = "/"
+    swag['host'] = "http://localhost:5000"
+    swag['basePath'] = ""
     swag['schemes'] = ['https']
     swag['paths'] = \
       {'/students':
