@@ -1,3 +1,4 @@
+import numpy as np
 from fastapi import FastAPI
 from nonogram import Nonogram
 
@@ -13,7 +14,6 @@ async def root():
 async def read_item(rows: int, cols: int):
   test_puzz = Nonogram(rows, cols)
   print(test_puzz.solution)
-  print(type(test_puzz.solution))
-  return {"clues": test_puzz.clues}#, "solution": test_puzz.solution}
+  return {"clues": test_puzz.clues, "solution": test_puzz.solution.tolist()}
     
 
