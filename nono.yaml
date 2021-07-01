@@ -1,0 +1,55 @@
+# Nonogram docker container deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nonogram
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nonogram
+  template:
+    metadata:
+      labels:
+        app: nonogram
+    spec:
+      containers:
+        - name: nonogram
+          image: nonogram-image:v0
+          imagePullPolicy: Never
+          ports:
+          - containerPort: 8080
+---
+# LoadBalancer Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: nono-entrypoint
+  namespace: default
+  labels:
+    service: nonogram
+spec:
+  selector:
+    app: nonogram
+  ports:
+  - protocol: "TCP"
+    port: 8080
+    targetPort: 8080
+  type: LoadBalancer
+
+#---
+#apiVersion: extensions/v1beta1
+#kind: Ingress
+#metadata:
+#  name: minikube-ingress
+#  annotations:
+#spec:
+#  rules:
+#  - host: nonogram.test
+#    http:
+#      paths:
+#      - path: /
+#        backend:
+#          serviceName: nonogram
+#          servicePort: 80
