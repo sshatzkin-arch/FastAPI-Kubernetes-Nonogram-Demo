@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nonogram
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nonogram
+  template:
+    metadata:
+      labels:
+        app: nonogram
+    spec:
+      containers:
+        - name: nonogram
+          image: nonogram:latest
+          imagePullPolicy: Never
+          ports:
+          - containerPort: 80
