@@ -19,7 +19,7 @@ spec:
           image: nonogram-image:v0
           imagePullPolicy: Never
           ports:
-          - containerPort: 8080
+          - containerPort: 80
 ---
 # LoadBalancer Service
 apiVersion: v1
@@ -35,7 +35,8 @@ spec:
   ports:
   - protocol: "TCP"
     port: 8080
-    targetPort: 8080
+    targetPort: 80
+    nodePort: 30001
   type: LoadBalancer
 
 #---
