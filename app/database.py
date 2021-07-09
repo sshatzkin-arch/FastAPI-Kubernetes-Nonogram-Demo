@@ -1,13 +1,20 @@
 import pyodbc 
+import os
 
-server = '127.0.0.1,64596'
+driver = '{/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.7.so.2.1}'
+#driver = '{SQL Server}' # For local testing
+server = '10.107.6.107' # Cluster IP Address
+#server = '127.0.0.1,64596' # External IP for local testing
+#server = os.getenv("mssql_server_address")
+
 database = 'NonogramDB'
 uid = "sa"
+
+#password = os.getenv("mssql_password")
 password = 'yourStrong(!)Password'
 
-
 def connect ():
-  conn = pyodbc.connect('Driver={SQL Server};' + 'Server=' + server + ';' + 'Database=' + database + ';' + 'uid=' + uid + ';' +'PWD=' + password + ';') #+ 'Trusted_Connection=yes;')
+  conn = pyodbc.connect('Driver='+ driver + ';' + 'Server=' + server + ';' + 'Database=' + database + ';' + 'uid=' + uid + ';' +'PWD=' + password + ';') #+ 'Trusted_Connection=yes;')
 
   return conn
 
