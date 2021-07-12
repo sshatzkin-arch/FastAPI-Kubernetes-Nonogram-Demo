@@ -1,5 +1,6 @@
 import numpy as np
 
+colors = {0:"W", 1:"B"}
 class Nonogram:
   # Init method
   def __init__(self, rows, cols):
@@ -86,14 +87,41 @@ class Nonogram:
 
     return clues
   
-  def arr2_to_dict(self, arr):
-    rows, cols = arr.shape
-    new_dict = {}
 
-    for i in range(rows):
-      new_dict[str(i)] = arr[i]
+  def encode(self, name):
+    encoded = {"name": name, "width": self.cols, "height": self.rows}
+    solution = solution_to_string(self.solution)
+    encoded["solution"] = solution
+    encoded["col_hints"] = hints_to_string(self.clues["col_clues"])
+    encoded["row_hints"] = hints_to_string(self.clues["row_clues"])
+    return encoded
 
-    return new_dict
 
 
 
+def solution_to_string(grid):
+  curr_color = grid[0][0]
+  run_length = 0
+  encoded_string = ""
+
+  for row in grid:
+    for val in row:
+      if (val == curr_color): # Continue Streak
+        run_length += 1
+      else:
+        encoded_string = encoded_string + str(run_length) + colors[curr_color]
+        curr_color = val
+        run_length = 1
+  encoded_string = encoded_string + str(run_length) + colors[curr_color]
+  return encoded_string
+
+def hints_to_string(hints):
+  encoded_string = ""
+  for row in hints:
+    for hint in row:
+      if row == []:
+        encoded_string = encoded_string + ","
+      else:  
+        encoded_string = encoded_string + str(hint) + ","
+    encoded_string = encoded_string[:-1] + "|"
+  return encoded_string[:-1]

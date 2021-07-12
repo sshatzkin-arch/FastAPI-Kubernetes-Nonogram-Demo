@@ -1,17 +1,17 @@
 import pyodbc 
 import os
 
-driver = '{/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.7.so.2.1}'
-#driver = '{SQL Server}' # For local testing
-server = '10.107.6.107' # Cluster IP Address
-#server = '127.0.0.1,64596' # External IP for local testing
-#server = os.getenv("mssql_server_address")
+#driver = '{/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.7.so.2.1}' # For deployment
+driver = '{SQL Server}' # For local testing
+
+#server = '10.107.6.107' # Cluster IP Address for Deployment 
+server = '127.0.0.1,63656' # External IP for local testing
 
 database = 'NonogramDB'
 uid = "sa"
 
-#password = os.getenv("mssql_password")
-password = 'yourStrong(!)Password'
+#password = os.getenv("mssql_password") # For Deployment
+password = 'yourStrong(!)Password' # For Local Testing
 
 def connect ():
   conn = pyodbc.connect('Driver='+ driver + ';' + 'Server=' + server + ';' + 'Database=' + database + ';' + 'uid=' + uid + ';' +'PWD=' + password + ';') #+ 'Trusted_Connection=yes;')
@@ -22,10 +22,17 @@ def connect ():
 def get_nonos(conn):
   cursor = conn.cursor()
   cursor.execute('SELECT * FROM Nonograms')
-
-
   return cursor_to_dict(cursor)
 
+def push_nono(conn, puzz):
+  cursor = conn.cursor()
+  sql = f"INSERT INTO Nonograms VALUES (\'{puzz['name']}\', {str(puzz['width'])}, {str(puzz['height'])}, \'{puzz['solution']}\', \'{puzz['col_hints']}\', \'{puzz['row_hints']}\')"
+  #(Name, Width, Height, Solution, Col_hints, Row_hints)
+  print(sql)
+  cursor.execute(sql)
+  print("Pushed: " + str(puzz))
+  conn.commit()
+  
 def print_nonos(conn):
   cursor = conn.cursor()
   cursor.execute('SELECT * FROM Nonograms')
