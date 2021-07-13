@@ -1,2 +1,3 @@
+dotenv
 numpy
 pyodbc==4.0.28

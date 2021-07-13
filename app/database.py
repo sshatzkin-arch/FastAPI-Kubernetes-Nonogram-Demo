@@ -1,21 +1,25 @@
 import pyodbc 
 import os
+import sys
+from dotenv import load_dotenv
 
+load_dotenv()
 driver = '{/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.7.so.2.1}' # For deployment
-#driver = '{SQL Server}' # For local testing
-
 server = "mssql-deployment.database.svc.cluster.local" # Cluster IP Address for Deployment 
-#server = '127.0.0.1,63656' # External IP for local testing
-
 database = 'NonogramDB'
 uid = "sa"
-
 password = os.getenv("mssql_password") # For Deployment
-#password = 'yourStrong(!)Password' # For Local Testing
+
+# For Local Testing
+if (sys.platform == "win32"):
+  driver = '{SQL Server}'
+  server = '127.0.0.1,63656' # External IP for local testing
+  password =  os.environ.get("sa_pass") # For Local Testing
+
 
 def connect ():
+  print(os.environ)
   conn = pyodbc.connect('Driver='+ driver + ';' + 'Server=' + server + ';' + 'Database=' + database + ';' + 'uid=' + uid + ';' +'PWD=' + password + ';') #+ 'Trusted_Connection=yes;')
-
   return conn
 
 
