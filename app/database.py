@@ -1,13 +1,20 @@
 import pyodbc 
+import os
 
-server = '127.0.0.1,64596'
+driver = '{/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.7.so.2.1}' # For deployment
+#driver = '{SQL Server}' # For local testing
+
+server = "mssql-deployment.database.svc.cluster.local" # Cluster IP Address for Deployment 
+#server = '127.0.0.1,63656' # External IP for local testing
+
 database = 'NonogramDB'
 uid = "sa"
-password = 'yourStrong(!)Password'
 
+password = os.getenv("mssql_password") # For Deployment
+#password = 'yourStrong(!)Password' # For Local Testing
 
 def connect ():
-  conn = pyodbc.connect('Driver={SQL Server};' + 'Server=' + server + ';' + 'Database=' + database + ';' + 'uid=' + uid + ';' +'PWD=' + password + ';') #+ 'Trusted_Connection=yes;')
+  conn = pyodbc.connect('Driver='+ driver + ';' + 'Server=' + server + ';' + 'Database=' + database + ';' + 'uid=' + uid + ';' +'PWD=' + password + ';') #+ 'Trusted_Connection=yes;')
 
   return conn
 
@@ -15,9 +22,33 @@ def connect ():
 def get_nonos(conn):
   cursor = conn.cursor()
   cursor.execute('SELECT * FROM Nonograms')
-
-
   return cursor_to_dict(cursor)
+
+def get_nonos_by(conn, ID = None, name = None, min_width = 0, min_height = 0, max_width = 10000, max_height = 10000):
+  cursor = conn.cursor()
+  id_str = ""
+  if (ID != None):
+    id_str = f"ID={str(ID)} AND "
+  
+  name_str = ""
+  if (name != None):
+    name_str = f"name=\'{name}\' AND "
+  
+  width_str =  f"width>{min_width} AND width<{max_width}"
+  height_str =  f"height>{min_height} AND height<{max_height}"
+  sql = f"SELECT * FROM Nonograms WHERE {id_str}{name_str}{width_str} AND {height_str}"
+  print(sql)
+  cursor.execute(sql)
+  return cursor_to_dict(cursor), sql
+
+def push_nono(conn, puzz):
+  cursor = conn.cursor()
+  sql = f"INSERT INTO Nonograms VALUES (\'{puzz['name']}\', {str(puzz['width'])}, {str(puzz['height'])}, \'{puzz['solution']}\', \'{puzz['col_hints']}\', \'{puzz['row_hints']}\')"
+  #(Name, Width, Height, Solution, Col_hints, Row_hints)
+  print(sql)
+  cursor.execute(sql)
+  print("Pushed: " + str(puzz))
+  conn.commit()
 
 def print_nonos(conn):
   cursor = conn.cursor()

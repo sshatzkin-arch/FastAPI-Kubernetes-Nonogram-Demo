@@ -18,3 +18,9 @@ spec:
           imagePullPolicy: Never
           ports:
           - containerPort: 80
+          env:
+            - name : mssql_password
+              valueFrom:
+                secretKeyRef:
+                  name: mssql
+                  key: SA_PASSWORD
