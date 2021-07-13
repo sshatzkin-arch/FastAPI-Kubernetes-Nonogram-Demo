@@ -1,7 +1,7 @@
 import numpy as np
 from fastapi import FastAPI
 from nonogram import Nonogram
-from database import connect, print_nonos, get_nonos, push_nono
+from database import connect, print_nonos, get_nonos, push_nono, get_nonos_by
 
 app = FastAPI()
 
@@ -10,13 +10,18 @@ app = FastAPI()
 async def root():
   conn = connect()
   nonograms = get_nonos(conn)
-  #print(nonograms)
-  #print(type(nonograms[0]))
-  return {"nonograms": nonograms} #{"message": "Hello World"} # #
+
+  return {"nonograms": nonograms}
+
+@app.get("/by/")
+async def get_by(id: int = None, name: str = None, min_width: int = 0, max_width: int = 10000, min_height: int = 0, max_height: int = 10000):
+  conn = connect()
+  nonograms, query = get_nonos_by(conn, ID = id, name = name, min_width = min_width, max_width = max_width, min_height = min_height, max_height = max_height)
+  return {"query": query, "nonograms": nonograms}
 
 
 @app.get("/nonogram/{rows}/{cols}/")
-async def read_item(rows: int, cols: int):
+async def get_nono(rows: int, cols: int):
   test_puzz = Nonogram(rows, cols)
   print(test_puzz.solution)
   print(test_puzz.encode("Test Puzz"))
@@ -24,7 +29,7 @@ async def read_item(rows: int, cols: int):
     
 # Generates a random puzzle and pushes it to SQL
 @app.get("/nonogram/{rows}/{cols}/push")
-async def read_item(rows: int, cols: int):
+async def get_nono_push(rows: int, cols: int):
   conn = connect()
   test_puzz = Nonogram(rows, cols)
   print(test_puzz.solution)
