@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "nanogramapi.fullname" . -}}
+{{- $fullName := include "nonogramapi.fullname" . -}}
 {{- $servicePort := .Values.service.port -}}
 {{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
@@ -7,8 +7,8 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app: {{ template "nanogramapi.name" . }}
-    chart: {{ template "nanogramapi.chart" . }}
+    app: {{ template "nonogramapi.name" . }}
+    chart: {{ template "nonogramapi.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- with .Values.ingress.annotations }}
