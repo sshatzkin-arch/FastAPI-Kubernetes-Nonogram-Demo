@@ -13,7 +13,7 @@ password = os.getenv("mssql_password") # For Deployment
 # For Local Testing
 if (sys.platform == "win32"):
   driver = '{SQL Server}'
-  server = '127.0.0.1,63656' # External IP for local testing
+  server = '127.0.0.1,1433' # External IP for local testing
   password =  os.environ.get("sa_pass") # For Local Testing
 
 
