@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mssql-deployment
-  namespace: database
+  name: {{ .Values.databaseService.name | default "mssql-deployment"}}
+  namespace: {{ .Values.app.database}}
 spec:
   selector:
     app: {{ .Values.app.database }}
   ports:
-    - protocol: TCP
-      port: 1433
-      targetPort: 1433
-  type: LoadBalancer
+    - protocol: {{ .Values.databaseService.protocol }}
+      port: {{ .Values.databaseService.port }}
+      targetPort: {{ .Values.databaseService.targetPort }}
+  type: {{ .Values.databaseService.type }}
 
 ---
 
@@ -18,7 +18,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}--mssql-deployment
-  namespace: database
+  namespace: {{ .Values.app.database}}
 spec:
   replicas: 1
   selector:
@@ -38,11 +38,11 @@ spec:
         env:
         - name: ACCEPT_EULA
           value: "Y"
-        - name: SA_PASSWORD
+        - name: {{ .Values.secret.key }}
           valueFrom:
             secretKeyRef:
-              name: mssql
-              key: SA_PASSWORD
+              name: {{ .Values.secret.name }}
+              key: {{ .Values.secret.key }}
         volumeMounts:
         - name: mssql-persistent-storage
           mountPath: /var/opt/mssql

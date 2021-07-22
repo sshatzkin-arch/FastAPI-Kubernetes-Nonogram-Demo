@@ -20,16 +20,19 @@ mainService:
   port: 8080
   targetPort: 80
   nodePort: 30001
+  protocol: TCP
 
 databaseService:
+  name: "mssql-deployment"
   type: LoadBalancer
+  port: 1433
+  targetPort: 1433
+  protocol: TCP
 
 secret:
   envName: mssql_password
   name: mssql
   key: SA_PASSWORD
-
-dbService: 1
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
