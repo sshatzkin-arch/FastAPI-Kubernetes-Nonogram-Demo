@@ -2,15 +2,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}--nonogram-entrypoint
-  namespace: nonogram
+  namespace: {{ .Values.app.main }}
   labels:
-    service: nonogram
+    service: {{ .Values.app.main }}
 spec:
   selector:
-    app: nonogram
+    app: {{ .Values.app.main }}
   ports:
   - protocol: "TCP"
-    port: 8080
-    targetPort: 80
-    nodePort: 30001
-  type: LoadBalancer
+    port: {{ .Values.mainService.port }}
+    targetPort: {{ .Values.mainService.targetPort }}
+    nodePort: {{ .Values.mainService.nodePort }}
+  type: {{ .Values.mainService.type }}

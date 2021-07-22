@@ -2,26 +2,26 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}--nonogramapi
-  namespace: nonogram
+  namespace: {{ .Values.app.main }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: nonogram
+      app: {{ .Values.app.main }}
   template:
     metadata:
       labels:
-        app: nonogram
+        app: {{ .Values.app.main }}
     spec:
       containers:
-        - name: nonogram
-          image: nonogram:latest
-          imagePullPolicy: Never
+        - name: {{ .Values.app.main }}
+          image: {{ .Values.image.name }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - containerPort: 80
+          - containerPort: {{ .Values.mainService.targetPort }}
           env:
-            - name : mssql_password
+            - name : {{ .Values.secret.envName }}
               valueFrom:
                 secretKeyRef:
-                  name: mssql
-                  key: SA_PASSWORD
+                  name: {{ .Values.secret.name }}
+                  key: {{ .Values.secret.key }}

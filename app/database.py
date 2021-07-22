@@ -18,8 +18,9 @@ if (sys.platform == "win32"):
 
 
 def connect ():
-  print(os.environ)
-  conn = pyodbc.connect('Driver='+ driver + ';' + 'Server=' + server + ';' + 'Database=' + database + ';' + 'uid=' + uid + ';' +'PWD=' + password + ';') #+ 'Trusted_Connection=yes;')
+  connect_str = 'Driver='+ driver + ';' + 'Server=' + server + ';' + 'Database=' + database + ';' + 'uid=' + uid + ';' +'PWD=' + password + ';'
+  print(connect_str)
+  conn = pyodbc.connect(connect_str)
   return conn
 
 

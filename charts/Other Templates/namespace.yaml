@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nonogram
+spec:
+  finalizers:
+  - kubernetes
+status:
+  phase: Active
+
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: database
+spec:
+  finalizers:
+    - kubernetes
+status:
+  phase: Active

@@ -5,7 +5,7 @@ metadata:
   namespace: database
 spec:
   selector:
-    app: mssql
+    app: {{ .Values.app.database }}
   ports:
     - protocol: TCP
       port: 1433
@@ -23,11 +23,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mssql
+      app: {{ .Values.app.database }}
   template:
     metadata:
       labels:
-        app: mssql
+        app: {{ .Values.app.database }}
     spec:
       terminationGracePeriodSeconds: 10
       containers:
