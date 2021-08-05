@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}--nonogram-entrypoint
+  namespace: {{ .Values.app.main }}
+  labels:
+    service: {{ .Values.app.main }}
+spec:
+  selector:
+    app: {{ .Values.app.main }}
+  ports:
+  - protocol: "TCP"
+    port: {{ .Values.mainService.port }}
+    targetPort: {{ .Values.mainService.targetPort }}
+    nodePort: {{ .Values.mainService.nodePort }}
+  type: {{ .Values.mainService.type }}

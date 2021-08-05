@@ -3,6 +3,7 @@ apiVersion: v1
 metadata:
   name: mssql-data-claim
   namespace: database
+  #finalizers: null
 spec:
   accessModes:
   - ReadWriteOnce

@@ -2,13 +2,16 @@ import pyodbc
 import os
 import sys
 from dotenv import load_dotenv
+import pathlib
 
 load_dotenv()
 driver = '{/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.7.so.2.1}' # For deployment
 server = "mssql-deployment.database.svc.cluster.local" # Cluster IP Address for Deployment 
 database = 'NonogramDB'
 uid = "sa"
-password = os.getenv("mssql_password") # For Deployment
+password = None
+
+# os.getenv("mssql_password") # For Deployment
 
 # For Local Testing
 if (sys.platform == "win32"):
@@ -16,6 +19,14 @@ if (sys.platform == "win32"):
   server = '127.0.0.1,1433' # External IP for local testing
   password =  os.environ.get("sa_pass") # For Local Testing
 
+passfile = pathlib.Path("/mnt/secrets-store/DBPassword")
+if passfile.exists ():
+  passFile = open("/mnt/secrets-store/DBPassword", "r")
+  print(password)
+  password = passFile.readlines()
+else:
+  print("Password Secret File Not Found")
+  
 
 def connect ():
   connect_str = 'Driver='+ driver + ';' + 'Server=' + server + ';' + 'Database=' + database + ';' + 'uid=' + uid + ';' +'PWD=' + password + ';'
