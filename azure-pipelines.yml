@@ -1,33 +1,32 @@
 trigger:
 - main
 
-
 stages:
   - stage: BuildNew
     displayName: Build and Push Docker Image
     variables:
-      imageName: 'nonogram'
+      imageName: "nonogram"
       containerRegistry: "POC_ACR"
       chartFolderPath: charts/nonogramapi-azure
       versionPrefix: "0.1"
     jobs:
-      - job: BuildAndPushDocker
-        pool:
-          vmImage: ubuntu-latest
-        steps:
-          - task: Docker@2
-            displayName: Login to ACR
-            inputs:
-              command: login
-              containerRegistry: $(containerRegistry)
-          - task: Docker@2
-            displayName: Build and Push
-            inputs:
-              command: buildAndPush
-              Dockerfile: "**/Dockerfile"
-              repository: $(imageName)
-          - task: Docker@2
-            displayName: Logout of ACR
-            inputs:
-              command: logout
-              containerRegistry: $(containerRegistry)
+    - job: BuildAndPushDocker
+      pool:
+        vmImage: ubuntu-latest
+      steps:
+        - task: Docker@2
+          displayName: Login to ACR
+          inputs:
+            command: login
+            containerRegistry: $(containerRegistry)
+        - task: Docker@2
+          displayName: Build and Push
+          inputs:
+            command: buildAndPush
+            Dockerfile: "**/Dockerfile"
+            repository: $(imageName)
+        - task: Docker@2
+          displayName: Logout of ACR
+          inputs:
+            command: logout
+            containerRegistry: $(containerRegistry)
