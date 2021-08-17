@@ -15,16 +15,16 @@ spec:
     spec:
       containers:
         - name: {{ .Values.app.main }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag}}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
           - containerPort: {{ .Values.mainService.targetPort }}
-          env:
-            - name : {{ .Values.secret.envName }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secret.name }}
-                  key: {{ .Values.secret.key }}
+          #env:
+          #  - name : {{ .Values.secret.envName }}
+          #    valueFrom:
+          #      secretKeyRef:
+          #        name: {{ .Values.secret.name }}
+          #        key: {{ .Values.secret.key }}
           volumeMounts:
             - name: secrets-store-inline
               mountPath: "/mnt/secrets-store"

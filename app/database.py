@@ -3,35 +3,42 @@ import os
 import sys
 from dotenv import load_dotenv
 import pathlib
+import logging
 
 load_dotenv()
-driver = '{/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.7.so.2.1}' # For deployment
+driver = '{/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.8.so.1.1}' # For deployment
 server = "mssql-deployment.database.svc.cluster.local" # Cluster IP Address for Deployment 
 database = 'NonogramDB'
 uid = "sa"
-password = None
+password = "<PASSWORD NOT SET>"
 
-# os.getenv("mssql_password") # For Deployment
+
+#os.getenv("mssql_password") # For Deployment with Kubernetes Secret
 
 # For Local Testing
 if (sys.platform == "win32"):
   driver = '{SQL Server}'
-  server = '127.0.0.1,1433' # External IP for local testing
+  server = '20.75.102.247' # External IP for local testing
   password =  os.environ.get("sa_pass") # For Local Testing
 
-passfile = pathlib.Path("/mnt/secrets-store/DBPassword")
+# Get Password from Azure Secrets volume
+passfile = pathlib.Path("./mnt/secrets-store/DBPassword")
 if passfile.exists ():
-  passFile = open("/mnt/secrets-store/DBPassword", "r")
-  print(password)
-  password = passFile.readlines()
+  passFile = open("./mnt/secrets-store/DBPassword", "r")
+  password = passFile.readline()
+  print("Password Found and Loaded")
 else:
   print("Password Secret File Not Found")
   
 
 def connect ():
-  connect_str = 'Driver='+ driver + ';' + 'Server=' + server + ';' + 'Database=' + database + ';' + 'uid=' + uid + ';' +'PWD=' + password + ';'
-  print(connect_str)
-  conn = pyodbc.connect(connect_str)
+  conn = None
+  if password != None:
+    connect_str = 'Driver='+ driver + ';' + 'Server=' + server + ';' + 'Database=' + database + ';' + 'uid=' + uid + ';' +'PWD=' + str(password) + ';'
+    print(connect_str) #-> Security issue bc it prints password to logs
+    conn = pyodbc.connect(connect_str)
+  else:
+    print("NO PASSWORD VALUE")
   return conn
 
 
