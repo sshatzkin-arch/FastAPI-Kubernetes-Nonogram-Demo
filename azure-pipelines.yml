@@ -1,14 +1,15 @@
 trigger:
 - main
 
+variables:
+  imageName: "nonogram"
+  containerRegistry: "POC_ACR"
+  chartFolderPath: charts/nonogramapi-azure
+  versionPrefix: "0.1"
+
 stages:
   - stage: BuildNew
     displayName: Build and Push Docker Image
-    variables:
-      imageName: "nonogram"
-      containerRegistry: "POC_ACR"
-      chartFolderPath: charts/nonogramapi-azure
-      versionPrefix: "0.1"
     jobs:
     - job: BuildAndPushDocker
       pool:
