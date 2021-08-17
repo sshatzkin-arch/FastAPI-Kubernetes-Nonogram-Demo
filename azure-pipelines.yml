@@ -10,7 +10,7 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  imageName: 'arfpocacr.azurecr.io/nonogram:latest'
+  imageName: 'nonogram'
   containerRegistry: "POC_ACR"
   chartFolderPath: charts/nonogramapi-azure
   versionPrefix: "0.1"
